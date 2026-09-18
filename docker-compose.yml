@@ -1,0 +1,11 @@
+services:
+  api-tests:
+    build: .
+    environment:
+      BASE_URL: ${BASE_URL:-https://testslotegrator.com}
+      TESTER_EMAIL: ${TESTER_EMAIL:-}
+      TESTER_PASSWORD: ${TESTER_PASSWORD:-}
+      DEFAULT_CURRENCY: ${DEFAULT_CURRENCY:-USD}
+      GET_ONE_EXPECTED_STATUS: ${GET_ONE_EXPECTED_STATUS:-201}
+    volumes:
+      - ./target:/tests/target
