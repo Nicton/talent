@@ -1,7 +1,7 @@
-package com.slotegrator.assignment.util;
+package util;
 
-import com.slotegrator.assignment.model.Player;
-import com.slotegrator.assignment.model.PlayerCreateRequest;
+import model.Player;
+import model.PlayerCreateRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

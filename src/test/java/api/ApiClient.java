@@ -1,6 +1,6 @@
-package com.slotegrator.assignment.api;
+package api;
 
-import com.slotegrator.assignment.config.TestConfig;
+import config.TestConfig;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.ErrorLoggingFilter;

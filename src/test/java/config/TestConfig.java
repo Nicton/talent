@@ -1,4 +1,4 @@
-package com.slotegrator.assignment.config;
+package config;
 
 import java.net.URI;
 import java.util.Optional;

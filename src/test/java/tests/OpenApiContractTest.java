@@ -1,6 +1,6 @@
-package com.slotegrator.assignment.tests;
+package tests;
 
-import com.slotegrator.assignment.config.TestConfig;
+import config.TestConfig;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

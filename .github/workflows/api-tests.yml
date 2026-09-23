@@ -1,0 +1,46 @@
+name: API tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: API base URL
+        required: false
+        default: https://testslotegrator.com
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BASE_URL: ${{ github.event.inputs.base_url || 'https://testslotegrator.com' }}
+      TESTER_EMAIL: ${{ secrets.TESTER_EMAIL }}
+      TESTER_PASSWORD: ${{ secrets.TESTER_PASSWORD }}
+      DEFAULT_CURRENCY: ${{ vars.DEFAULT_CURRENCY || 'USD' }}
+      GET_ONE_EXPECTED_STATUS: ${{ vars.GET_ONE_EXPECTED_STATUS || '201' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate required secrets
+        run: |
+          test -n "$TESTER_EMAIL" || (echo "TESTER_EMAIL secret is required" && exit 1)
+          test -n "$TESTER_PASSWORD" || (echo "TESTER_PASSWORD secret is required" && exit 1)
+
+      - name: Build test image
+        run: docker compose build api-tests
+
+      - name: Run API tests in Docker
+        run: docker compose run --rm api-tests
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: target/surefire-reports
+          if-no-files-found: ignore

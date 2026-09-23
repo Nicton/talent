@@ -1,8 +1,8 @@
-package com.slotegrator.assignment.testdata;
+package testdata;
 
 import com.github.javafaker.Faker;
-import com.slotegrator.assignment.config.TestConfig;
-import com.slotegrator.assignment.model.PlayerCreateRequest;
+import config.TestConfig;
+import model.PlayerCreateRequest;
 
 import java.time.Instant;
 import java.util.Locale;
@@ -52,6 +52,18 @@ public final class PlayerFactory {
                 source.passwordRepeat(),
                 source.surname(),
                 username
+        );
+    }
+
+    public static PlayerCreateRequest withPassword(PlayerCreateRequest source, String password, String passwordRepeat) {
+        return new PlayerCreateRequest(
+                source.currencyCode(),
+                source.email(),
+                source.name(),
+                password,
+                passwordRepeat,
+                source.surname(),
+                source.username()
         );
     }
 

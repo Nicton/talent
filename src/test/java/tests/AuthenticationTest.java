@@ -1,9 +1,9 @@
-package com.slotegrator.assignment.tests;
+package tests;
 
-import com.slotegrator.assignment.api.AuthApi;
-import com.slotegrator.assignment.config.TestConfig;
-import com.slotegrator.assignment.model.Credentials;
-import com.slotegrator.assignment.model.Token;
+import api.AuthApi;
+import config.TestConfig;
+import model.Credentials;
+import model.Token;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

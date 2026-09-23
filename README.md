@@ -1,6 +1,6 @@
 # Players API automated tests
 
-Java API test framework for the Slotegrator Players API test assignment.
+Java API test framework for the Slotegrator Players API test assignment. The test code uses a deliberately flat package layout to keep the assignment easy to review.
 
 ## Tech stack
 
@@ -28,8 +28,9 @@ Java API test framework for the Slotegrator Players API test assignment.
 - Invalid login is rejected.
 - Protected players endpoints reject invalid bearer token.
 - Player creation response matches the documented schema.
-- Basic validation checks for username and password length.
+- Validation checks for username length, password length, password confirmation, missing email and invalid email format.
 - Duplicate email registration is rejected.
+- Not-found behavior is checked for unknown player lookup and unknown player deletion.
 - Automatic cleanup deletes created test data after each test.
 
 ## Configuration
@@ -57,6 +58,28 @@ Then fill in the credentials.
 ```bash
 docker compose run --rm api-tests
 ```
+
+## GitHub Actions
+
+The repository contains a manual and push-triggered workflow: `.github/workflows/api-tests.yml`.
+
+To run it from GitHub UI:
+
+1. Open **Actions**.
+2. Select **API tests**.
+3. Click **Run workflow**.
+
+Required repository secrets:
+
+- `TESTER_EMAIL`
+- `TESTER_PASSWORD`
+
+Optional repository variables:
+
+- `DEFAULT_CURRENCY`
+- `GET_ONE_EXPECTED_STATUS`
+
+The workflow builds the Docker image and runs the same command as local Docker execution.
 
 ## Run with Maven locally
 

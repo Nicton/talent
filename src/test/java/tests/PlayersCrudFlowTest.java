@@ -1,9 +1,9 @@
-package com.slotegrator.assignment.tests;
+package tests;
 
-import com.slotegrator.assignment.model.Player;
-import com.slotegrator.assignment.model.PlayerCreateRequest;
-import com.slotegrator.assignment.model.PlayerLookupRequest;
-import com.slotegrator.assignment.testdata.PlayerFactory;
+import model.Player;
+import model.PlayerCreateRequest;
+import model.PlayerLookupRequest;
+import testdata.PlayerFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static com.slotegrator.assignment.util.PlayerAssertions.assertMatchesRequest;
+import static util.PlayerAssertions.assertMatchesRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PlayersCrudFlowTest extends BaseApiTest {

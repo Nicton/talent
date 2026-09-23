@@ -1,11 +1,11 @@
-package com.slotegrator.assignment.tests;
+package tests;
 
-import com.slotegrator.assignment.api.AuthApi;
-import com.slotegrator.assignment.api.PlayersApi;
-import com.slotegrator.assignment.config.TestConfig;
-import com.slotegrator.assignment.model.Credentials;
-import com.slotegrator.assignment.model.Player;
-import com.slotegrator.assignment.model.Token;
+import api.AuthApi;
+import api.PlayersApi;
+import config.TestConfig;
+import model.Credentials;
+import model.Player;
+import model.Token;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 

@@ -1,4 +1,4 @@
-package com.slotegrator.assignment.model;
+package model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

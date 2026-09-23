@@ -1,7 +1,7 @@
-package com.slotegrator.assignment.api;
+package api;
 
-import com.slotegrator.assignment.model.Credentials;
-import com.slotegrator.assignment.model.Token;
+import model.Credentials;
+import model.Token;
 import io.restassured.response.Response;
 
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;

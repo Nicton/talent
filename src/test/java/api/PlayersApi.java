@@ -1,8 +1,8 @@
-package com.slotegrator.assignment.api;
+package api;
 
-import com.slotegrator.assignment.model.Player;
-import com.slotegrator.assignment.model.PlayerCreateRequest;
-import com.slotegrator.assignment.model.PlayerLookupRequest;
+import model.Player;
+import model.PlayerCreateRequest;
+import model.PlayerLookupRequest;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.Response;
 
