@@ -116,3 +116,17 @@ mvn test -Dgroups=security
 - variables (optional): `DEFAULT_CURRENCY`, `GET_ONE_EXPECTED_STATUS`
 
 Surefire reports are uploaded as a build artifact.
+
+## Reports
+
+Every run produces the usual Surefire output and a small summary:
+
+- `target/surefire-reports` — raw XML and text results per test class;
+- `target/reports/surefire.html` — readable HTML report;
+- the job summary on the workflow run page — a table with tests, failures, errors and skipped per class.
+
+The HTML report can also be generated locally after a test run:
+
+```bash
+mvn surefire-report:report-only
+```

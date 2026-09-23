@@ -12,6 +12,9 @@ on:
   pull_request:
     branches: [ master, main ]
 
+permissions:
+  contents: read
+
 jobs:
   api-tests:
     runs-on: ubuntu-latest
@@ -34,13 +37,29 @@ jobs:
       - name: Build test image
         run: docker compose build api-tests
 
-      - name: Run API tests in Docker
+      - name: Run API tests
+        id: tests
+        continue-on-error: true
         run: docker compose run --rm api-tests
+
+      - name: Generate HTML report
+        if: always()
+        run: docker compose run --rm api-tests mvn -B -q surefire-report:report-only
+
+      - name: Write job summary
+        if: always()
+        run: python3 scripts/summarize-surefire.py target/surefire-reports >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: surefire-reports
-          path: target/surefire-reports
+          name: test-reports
+          path: |
+            target/surefire-reports
+            target/reports
           if-no-files-found: ignore
+
+      - name: Fail the job when tests failed
+        if: steps.tests.outcome == 'failure'
+        run: exit 1
