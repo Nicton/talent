@@ -84,6 +84,43 @@ class PlayersKnownDefectsTest extends BaseApiTest {
     }
 
     @Test
+    @DisplayName("POST /api/automationTask/create should reject an email without an @ sign")
+    void createShouldRejectEmailWithoutAtSign() {
+        PlayerCreateRequest request = PlayerFactory.withEmail(PlayerFactory.validPlayer(), "player.example.test");
+        var response = playersApi.createRaw(request).then();
+
+        if (response.extract().statusCode() == 201) {
+            remember(response.extract().as(Player.class));
+        }
+        response.statusCode(400);
+    }
+
+    @Test
+    @DisplayName("POST /api/automationTask/create should reject a password confirmation mismatch")
+    void createShouldRejectPasswordConfirmationMismatch() {
+        PlayerCreateRequest valid = PlayerFactory.validPlayer();
+        PlayerCreateRequest request = PlayerFactory.withPassword(valid, "Passw0rd1!", "Different1!");
+        var response = playersApi.createRaw(request).then();
+
+        if (response.extract().statusCode() == 201) {
+            remember(response.extract().as(Player.class));
+        }
+        response.statusCode(400);
+    }
+
+    @Test
+    @DisplayName("POST /api/automationTask/create should reject an unknown currency code")
+    void createShouldRejectUnknownCurrencyCode() {
+        PlayerCreateRequest request = PlayerFactory.withCurrency(PlayerFactory.validPlayer(), "not-a-currency");
+        var response = playersApi.createRaw(request).then();
+
+        if (response.extract().statusCode() == 201) {
+            remember(response.extract().as(Player.class));
+        }
+        response.statusCode(400);
+    }
+
+    @Test
     @DisplayName("POST /api/automationTask/getOne should return 404 for an unknown email")
     void getOneShouldReturn404ForUnknownEmail() {
         PlayerLookupRequest request = new PlayerLookupRequest("missing-" + System.nanoTime() + "@example.test");

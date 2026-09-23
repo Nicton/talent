@@ -23,6 +23,8 @@ Coverage of the Players API test assignment. `Automated` points to the class tha
 | VAL-05 | Validation | Delete with an unknown id | `400` on the current API (expected `404`, defect D-09) | `PlayersValidationTest` | documented |
 | VAL-06 | Validation | Delete of a player created in the test | `200` and the record is gone | `PlayersValidationTest` | pass |
 | VAL-07 | Validation | Delete without an id | `404` (no route) | `PlayersValidationTest` | pass |
+| VAL-08 | Validation | Currency code is stored as sent | `EUR` on create and on lookup | `PlayersValidationTest` | pass |
+| VAL-09 | Validation | Matching password confirmation | Request accepted | `PlayersValidationTest` | pass |
 | CON-01 | Contract | Published OpenAPI document describes the used endpoints | Document reachable and complete | `OpenApiContractTest` | pass |
 | KDI-01 | Known defect | Login should answer `200` | `200` | `PlayersKnownDefectsTest` | fails (D-01) |
 | KDI-02 | Known defect | Login should return the documented token payload | `access_token`, `token_type`, `expires_in`, `scope` | `PlayersKnownDefectsTest` | fails (D-02) |
@@ -33,6 +35,9 @@ Coverage of the Players API test assignment. `Automated` points to the class tha
 | KDI-07 | Known defect | Unknown delete returns `404` | `404` | `PlayersKnownDefectsTest` | fails (D-09) |
 | KDI-08 | Known defect | The same id cannot be deleted twice | second call `404` | `PlayersKnownDefectsTest` | fails (D-10) |
 | KDI-09 | Known defect | Accounts of other testers are not readable | `403`/`404` | `PlayersKnownDefectsTest` | fails (D-11) |
+| KDI-10 | Known defect | Email without an `@` is rejected | `400` | `PlayersKnownDefectsTest` | fails (D-20) |
+| KDI-11 | Known defect | Different `password_change` / `password_repeat` is rejected | `400` | `PlayersKnownDefectsTest` | fails (D-18) |
+| KDI-12 | Known defect | Unknown currency code is rejected | `400` | `PlayersKnownDefectsTest` | fails (D-19) |
 
 ## Not automated
 

@@ -23,9 +23,14 @@ Every item was reproduced against the live service; the automated checks that pi
 | D-15 | Security | `BasicAuth` declared in the specification is enforced | The API answers without HTTP Basic credentials | Low |
 | D-16 | Design | A read uses a safe method | `getOne` is a `POST` for a read operation | Low |
 | D-17 | Delete | Malformed or unknown ids are handled consistently | `abc` and `missing-123` return `400`, while `not-a-number` and `000000000000000000000000` return `200 OK` | Medium |
+| D-18 | Create | `password_change` and `password_repeat` must be equal | Different values are accepted with `201`, the second one is stored | **High** |
+| D-19 | Create | `currency_code` is validated against known currency codes | `XXX`, `not-a-currency`, `""` and `null` are accepted and stored as provided | Medium |
+| D-20 | Create | Email format is validated (at least the `@` sign) | `not-an-email`, `player.example.test`, `""` and `null` are accepted with `201` | **High** |
 
 ## Notes
 
+- `currency_code` is the ISO-4217 currency of the player's account (e.g. `USD`, `EUR`). The API stores it
+  without validating it (see D-19). The tests use `DEFAULT_CURRENCY` from the configuration.
 - D-11 also means the last step of the task ("verify the list is empty") cannot be asserted globally: the
   collection is shared, so tests can only verify that the players they created are gone.
 - D-05/D-06 are the reason the field validation checks in `PlayersValidationTest` document the current

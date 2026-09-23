@@ -1,5 +1,6 @@
 package tests;
 
+import config.TestConfig;
 import model.Player;
 import model.PlayerCreateRequest;
 import model.PlayerLookupRequest;
@@ -69,6 +70,29 @@ class PlayersValidationTest extends BaseApiTest {
 
         assertThat(second.email()).isEqualTo(first.email());
         assertThat(second.id()).isNotEqualTo(first.id());
+    }
+
+    @Test
+    @DisplayName("POST /api/automationTask/create stores the currency code that was sent")
+    void createPlayerStoresCurrencyCode() {
+        PlayerCreateRequest request = PlayerFactory.withCurrency(PlayerFactory.validPlayer(), "EUR");
+
+        Player created = remember(playersApi.create(request));
+        Player profile = playersApi.getOne(new PlayerLookupRequest(request.email()), TestConfig.getOneExpectedStatus());
+
+        assertThat(created.currencyCode()).isEqualTo("EUR");
+        assertThat(profile.currencyCode()).isEqualTo("EUR");
+    }
+
+    @Test
+    @DisplayName("POST /api/automationTask/create accepts a matching password confirmation")
+    void createPlayerAcceptsMatchingPasswordConfirmation() {
+        PlayerCreateRequest valid = PlayerFactory.validPlayer();
+        PlayerCreateRequest request = PlayerFactory.withPassword(valid, "Passw0rd1!", "Passw0rd1!");
+
+        Player created = remember(playersApi.create(request));
+
+        assertThat(created.email()).isEqualTo(request.email());
     }
 
     @Test
