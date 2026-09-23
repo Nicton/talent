@@ -55,6 +55,16 @@ src/test/resources/schemas   JSON schemas used for response validation
 
 - The published OpenAPI document is reachable and still describes the endpoints and security schemes used here.
 
+### Known defects (`known-issues`)
+
+- `PlayersKnownDefectsTest` describes how the API *should* behave. Every failure is a defect listed in
+  [`DEFECTS.md`](DEFECTS.md), and `TEST_CASES.md` maps the cases to the classes that implement them.
+- The tag is excluded from the default run so the regular suite stays green. Run it explicitly:
+
+```bash
+mvn test -Dexcluded.groups= -Dgroups=known-issues
+```
+
 ## Notes on the live API
 
 The test account API behaves slightly differently from the assignment text, and the tests follow the live behaviour:

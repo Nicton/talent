@@ -84,4 +84,20 @@ class PlayersValidationTest extends BaseApiTest {
     void deleteRejectsUnknownPlayerId() {
         assertBadRequest(playersApi.deleteOneRaw("missing-" + System.nanoTime()).then());
     }
+
+    @Test
+    @DisplayName("DELETE /api/automationTask/deleteOne/{id} without an id does not match any route")
+    void deleteWithoutIdDoesNotMatchTheRoute() {
+        assertThat(playersApi.deleteOneRaw("").then().extract().statusCode()).isEqualTo(404);
+    }
+
+    @Test
+    @DisplayName("DELETE /api/automationTask/deleteOne/{id} removes a player that was created before")
+    void deleteRemovesAnExistingPlayer() {
+        Player player = remember(playersApi.create(PlayerFactory.validPlayer()));
+
+        Player deleted = playersApi.deleteOne(player.id());
+
+        assertThat(deleted.id()).isEqualTo(player.id());
+    }
 }

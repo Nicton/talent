@@ -45,4 +45,12 @@ class AuthenticationTest {
     void loginWithEmptyPayloadIsRejected() {
         assertUnauthorized(authApi.loginRaw(new Credentials(null, null)).then());
     }
+
+    @Test
+    @DisplayName("POST /api/tester/login rejects credentials that were swapped")
+    void loginWithSwappedCredentialsIsUnauthorized() {
+        Credentials credentials = new Credentials(TestConfig.testerPassword(), TestConfig.testerEmail());
+
+        assertUnauthorized(authApi.loginRaw(credentials).then());
+    }
 }
