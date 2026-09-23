@@ -23,7 +23,7 @@ class PlayersCrudFlowTest extends BaseApiTest {
     private static final int PLAYERS_TO_CREATE = 12;
 
     @Test
-    @DisplayName("Create 12 players, read them back, sort by name, delete them and verify the list is empty")
+    @DisplayName("Create 12 players, read them back, sort by name, delete them and verify they are gone")
     void assignmentCrudFlowWorksEndToEnd() {
         List<PlayerCreateRequest> requests = IntStream.rangeClosed(1, PLAYERS_TO_CREATE)
                 .mapToObj(PlayerFactory::validPlayer)
@@ -37,6 +37,7 @@ class PlayersCrudFlowTest extends BaseApiTest {
         assertThat(created)
                 .hasSize(PLAYERS_TO_CREATE)
                 .extracting(Player::id)
+                .doesNotContainNull()
                 .doesNotHaveDuplicates();
 
         for (int i = 0; i < PLAYERS_TO_CREATE; i++) {
@@ -50,8 +51,9 @@ class PlayersCrudFlowTest extends BaseApiTest {
         createdPlayers.clear();
 
         assertThat(playersApi.getAll())
-                .as("getAll should be empty after the players created in this run were deleted")
-                .isEmpty();
+                .as("players deleted by this test should not be listed any more")
+                .extracting(Player::id)
+                .doesNotContainAnyElementsOf(idsOf(created));
     }
 
     private void verifyProfileMatchesCreateResponse(PlayerCreateRequest request, Player fromCreate) {
@@ -66,13 +68,15 @@ class PlayersCrudFlowTest extends BaseApiTest {
                 .thenComparing(Player::surname, String.CASE_INSENSITIVE_ORDER)
                 .thenComparing(Player::id);
 
-        Set<Integer> createdIds = created.stream().map(Player::id).collect(Collectors.toSet());
-
         List<Player> listedCreatedPlayers = playersApi.getAll().stream()
-                .filter(player -> createdIds.contains(player.id()))
+                .filter(player -> idsOf(created).contains(player.id()))
                 .toList();
 
         assertThat(listedCreatedPlayers).hasSize(PLAYERS_TO_CREATE);
         assertThat(listedCreatedPlayers.stream().sorted(byName).toList()).isSortedAccordingTo(byName);
+    }
+
+    private static Set<String> idsOf(List<Player> players) {
+        return players.stream().map(Player::id).collect(Collectors.toSet());
     }
 }

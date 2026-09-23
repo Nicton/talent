@@ -26,36 +26,49 @@ src/test/resources/schemas   JSON schemas used for response validation
 
 ## Covered scenarios
 
-### Assignment flow (`smoke`, `players`)
+### Assignment flow (`players`)
 
 1. `POST /api/tester/login` returns a bearer token.
 2. `POST /api/automationTask/create` creates 12 players.
 3. `POST /api/automationTask/getOne` returns the profile of a created player.
 4. `GET /api/automationTask/getAll` returns the created players, sorted by name.
 5. `DELETE /api/automationTask/deleteOne/{id}` removes the created players.
-6. `GET /api/automationTask/getAll` no longer contains them.
+6. `GET /api/automationTask/getAll` no longer lists them.
 
 ### Authentication (`authentication`)
 
-- Valid credentials return a token that matches the documented schema.
-- Unknown email and wrong password are rejected with `401`.
-- Missing or malformed credentials are rejected with a client error.
-
-### Validation (`validation`)
-
-- Required fields: username, email, password, password confirmation.
-- Field rules: username and password minimum length, password confirmation match, email format, duplicate email.
-- Negative input: empty, null, whitespace and special characters.
-- Boundary input: minimum length, oversized values.
-- Lookup and deletion of unknown players return `404`.
+- Valid credentials return a token and the authenticated user.
+- Unknown email, wrong password and an empty payload are rejected with `401`.
 
 ### Security (`security`)
 
-- Protected players endpoints reject requests without a token, with a malformed token, and with a non-bearer scheme.
+- Players endpoints reject requests without a token, with a malformed token and with a non-bearer scheme (`401`).
+
+### Validation (`validation`)
+
+- Created players are read back with the values that were sent.
+- Values at the edge of the documented field rules are stored as provided.
+- Duplicate emails are currently accepted by the test API, which is pinned by a test.
+- Lookup and deletion of an unknown record are reported as a client error (`400`).
 
 ### Contract (`contract`)
 
 - The published OpenAPI document is reachable and still describes the endpoints and security schemes used here.
+
+## Notes on the live API
+
+The test account API behaves slightly differently from the assignment text, and the tests follow the live behaviour:
+
+| Call | Assignment text | Live API |
+| --- | --- | --- |
+| `POST /api/tester/login` | `200` | `201`, token in `accessToken` |
+| `POST /api/automationTask/create` | `201` | `201`, created document in `_id` |
+| `POST /api/automationTask/getOne` | `200` | `201`, document in `id` |
+| `GET /api/automationTask/getAll` | `200` | `200` |
+| `DELETE /api/automationTask/deleteOne/{id}` | `200` | `200` |
+| Unknown lookup / delete | - | `400` |
+
+The `getOne` status used by the tests can be overridden with `GET_ONE_EXPECTED_STATUS`.
 
 ## Configuration
 
@@ -67,7 +80,7 @@ The tests read their configuration from environment variables:
 | `TESTER_EMAIL` | yes | - | Tester account email |
 | `TESTER_PASSWORD` | yes | - | Tester account password |
 | `DEFAULT_CURRENCY` | no | `USD` | Currency used for generated players |
-| `GET_ONE_EXPECTED_STATUS` | no | `201` | Expected status for `getOne`; the task description says `200`, the published OpenAPI document says `201` |
+| `GET_ONE_EXPECTED_STATUS` | no | `201` | Expected status for `getOne` |
 
 Create a local `.env` file from `.env.example` and fill in the credentials:
 

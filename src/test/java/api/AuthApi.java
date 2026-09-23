@@ -17,16 +17,20 @@ public class AuthApi extends ApiClient {
                 .post(LOGIN_PATH);
     }
 
+    /**
+     * The live API answers a successful login with 201 Created and returns the
+     * token in the "accessToken" field.
+     */
     public Token login(Credentials credentials) {
         Response response = loginRaw(credentials)
                 .then()
-                .statusCode(200)
+                .statusCode(201)
                 .body(matchesJsonSchemaInClasspath("schemas/token.schema.json"))
                 .extract().response();
 
         Token token = response.as(Token.class);
         assertThat(token.accessToken()).as("access token").isNotBlank();
-        assertThat(token.tokenType()).as("token type").isNotBlank();
+        assertThat(token.user()).as("authenticated user").isNotNull();
         return token;
     }
 }

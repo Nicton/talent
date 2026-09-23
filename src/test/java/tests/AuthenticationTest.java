@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static util.PlayerAssertions.assertClientError;
 import static util.PlayerAssertions.assertUnauthorized;
 
 @Tag("authentication")
@@ -22,9 +21,7 @@ class AuthenticationTest {
         Token token = authApi.login(new Credentials(TestConfig.testerEmail(), TestConfig.testerPassword()));
 
         assertThat(token.accessToken()).isNotBlank();
-        assertThat(token.tokenType()).isNotBlank();
-        assertThat(token.expiresIn()).isNotBlank();
-        assertThat(token.scope()).isNotNull();
+        assertThat(token.user().email()).isEqualTo(TestConfig.testerEmail());
     }
 
     @Test
@@ -46,6 +43,6 @@ class AuthenticationTest {
     @Test
     @DisplayName("POST /api/tester/login rejects an empty payload")
     void loginWithEmptyPayloadIsRejected() {
-        assertClientError(authApi.loginRaw(new Credentials(null, null)).then());
+        assertUnauthorized(authApi.loginRaw(new Credentials(null, null)).then());
     }
 }

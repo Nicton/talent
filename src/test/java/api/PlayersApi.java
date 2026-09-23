@@ -81,11 +81,11 @@ public class PlayersApi extends ApiClient {
         return List.of(response.as(Player.class));
     }
 
-    public Response deleteOneRaw(int id) {
+    public Response deleteOneRaw(String id) {
         return request().pathParam("id", id).when().delete(DELETE_ONE_PATH);
     }
 
-    public Player deleteOne(int id) {
+    public Player deleteOne(String id) {
         return deleteOneRaw(id)
                 .then()
                 .statusCode(200)

@@ -20,7 +20,7 @@ class PlayersSecurityTest {
         assertUnauthorized(anonymous.getAllRaw().then());
         assertUnauthorized(anonymous.getOneRaw(new PlayerLookupRequest("missing@example.test")).then());
         assertUnauthorized(anonymous.createRaw(PlayerFactory.validPlayer()).then());
-        assertUnauthorized(anonymous.deleteOneRaw(1).then());
+        assertUnauthorized(anonymous.deleteOneRaw("1").then());
     }
 
     @Test
@@ -31,7 +31,7 @@ class PlayersSecurityTest {
         assertUnauthorized(malformed.getAllRaw().then());
         assertUnauthorized(malformed.getOneRaw(new PlayerLookupRequest("missing@example.test")).then());
         assertUnauthorized(malformed.createRaw(PlayerFactory.validPlayer()).then());
-        assertUnauthorized(malformed.deleteOneRaw(1).then());
+        assertUnauthorized(malformed.deleteOneRaw("1").then());
     }
 
     @Test
@@ -40,6 +40,6 @@ class PlayersSecurityTest {
         PlayersApi wrongScheme = PlayersApi.withRawToken("Basic dGVzdDp0ZXN0");
 
         assertUnauthorized(wrongScheme.getAllRaw().then());
-        assertUnauthorized(wrongScheme.deleteOneRaw(1).then());
+        assertUnauthorized(wrongScheme.deleteOneRaw("1").then());
     }
 }

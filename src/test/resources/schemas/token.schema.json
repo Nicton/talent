@@ -1,11 +1,19 @@
 {
   "type": "object",
-  "required": ["access_token", "token_type", "expires_in", "scope"],
+  "required": ["accessToken", "user"],
   "properties": {
-    "access_token": {"type": "string", "minLength": 1},
-    "token_type": {"type": "string", "minLength": 1},
-    "expires_in": {"type": "string", "minLength": 1},
-    "scope": {"type": "string"}
+    "accessToken": {"type": "string", "minLength": 1},
+    "user": {
+      "type": "object",
+      "required": ["id", "email"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "email": {"type": "string", "minLength": 1},
+        "name": {"type": "string"},
+        "surname": {"type": "string"}
+      },
+      "additionalProperties": true
+    }
   },
   "additionalProperties": true
 }

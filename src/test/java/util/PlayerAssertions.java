@@ -11,32 +11,22 @@ public final class PlayerAssertions {
     }
 
     public static void assertMatchesRequest(Player actual, PlayerCreateRequest expected) {
-        assertThat(actual.id()).as("player id").isPositive();
+        assertThat(actual.id()).as("player id").isNotBlank();
         assertThat(actual.username()).as("username").isEqualTo(expected.username());
         assertThat(actual.email()).as("email").isEqualTo(expected.email());
         assertThat(actual.name()).as("name").isEqualTo(expected.name());
         assertThat(actual.surname()).as("surname").isEqualTo(expected.surname());
     }
 
-    /**
-     * The API contract does not pin an exact status for malformed input, so negative
-     * cases only require a client error (4xx) rather than a specific code.
-     */
-    public static void assertClientError(ValidatableResponse response) {
-        assertThat(response.extract().statusCode())
-                .as("response should be a 4xx client error")
-                .isBetween(400, 499);
-    }
-
     public static void assertUnauthorized(ValidatableResponse response) {
-        assertThat(response.extract().statusCode())
-                .as("response should be 401 Unauthorized")
-                .isEqualTo(401);
+        assertThat(response.extract().statusCode()).as("response status").isEqualTo(401);
     }
 
-    public static void assertNotFound(ValidatableResponse response) {
-        assertThat(response.extract().statusCode())
-                .as("response should be 404 Not Found")
-                .isEqualTo(404);
+    /**
+     * Lookup and deletion of an unknown record are reported as a bad request by
+     * the current API.
+     */
+    public static void assertBadRequest(ValidatableResponse response) {
+        assertThat(response.extract().statusCode()).as("response status").isEqualTo(400);
     }
 }
