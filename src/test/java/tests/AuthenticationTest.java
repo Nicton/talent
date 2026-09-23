@@ -5,10 +5,14 @@ import config.TestConfig;
 import model.Credentials;
 import model.Token;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static util.PlayerAssertions.assertClientError;
+import static util.PlayerAssertions.assertUnauthorized;
 
+@Tag("authentication")
 class AuthenticationTest {
     private final AuthApi authApi = new AuthApi();
 
@@ -24,10 +28,24 @@ class AuthenticationTest {
     }
 
     @Test
-    @DisplayName("POST /api/tester/login rejects invalid credentials")
-    void loginWithInvalidCredentialsIsUnauthorized() {
-        authApi.loginRaw(new Credentials(TestConfig.testerEmail(), "wrong-password"))
-                .then()
-                .statusCode(401);
+    @DisplayName("POST /api/tester/login rejects a wrong password")
+    void loginWithWrongPasswordIsUnauthorized() {
+        Credentials credentials = new Credentials(TestConfig.testerEmail(), "wrong-password-" + System.nanoTime());
+
+        assertUnauthorized(authApi.loginRaw(credentials).then());
+    }
+
+    @Test
+    @DisplayName("POST /api/tester/login rejects an unknown account")
+    void loginWithUnknownEmailIsUnauthorized() {
+        Credentials credentials = new Credentials("missing-" + System.nanoTime() + "@example.test", "irrelevant-password");
+
+        assertUnauthorized(authApi.loginRaw(credentials).then());
+    }
+
+    @Test
+    @DisplayName("POST /api/tester/login rejects an empty payload")
+    void loginWithEmptyPayloadIsRejected() {
+        assertClientError(authApi.loginRaw(new Credentials(null, null)).then());
     }
 }

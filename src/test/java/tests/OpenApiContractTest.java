@@ -3,14 +3,16 @@ package tests;
 import config.TestConfig;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Tag("contract")
 class OpenApiContractTest {
 
     @Test
-    @DisplayName("Published OpenAPI document is reachable and describes required Players API endpoints")
+    @DisplayName("The published OpenAPI document still describes the endpoint contract used by these tests")
     void openApiDocumentContainsRequiredEndpoints() {
         String specification = RestAssured.given()
                 .baseUri(TestConfig.baseUri().toString())

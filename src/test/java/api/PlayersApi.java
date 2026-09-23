@@ -5,6 +5,7 @@ import model.PlayerCreateRequest;
 import model.PlayerLookupRequest;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 import java.util.List;
 
@@ -22,8 +23,28 @@ public class PlayersApi extends ApiClient {
         this.token = token;
     }
 
+    /**
+     * Client without an Authorization header, used to check that the players
+     * endpoints actually require authentication.
+     */
+    public static PlayersApi withoutToken() {
+        return new PlayersApi(null);
+    }
+
+    /**
+     * Client that sends the supplied value as an opaque credential, used to check
+     * how malformed tokens are handled.
+     */
+    public static PlayersApi withRawToken(String rawAuthorizationHeader) {
+        return new PlayersApi(rawAuthorizationHeader);
+    }
+
+    private RequestSpecification request() {
+        return token == null ? givenAnonymous() : givenBearer(token);
+    }
+
     public Response createRaw(PlayerCreateRequest request) {
-        return givenBearer(token).body(request).when().post(CREATE_PATH);
+        return request().body(request).when().post(CREATE_PATH);
     }
 
     public Player create(PlayerCreateRequest request) {
@@ -35,7 +56,7 @@ public class PlayersApi extends ApiClient {
     }
 
     public Response getOneRaw(PlayerLookupRequest request) {
-        return givenBearer(token).body(request).when().post(GET_ONE_PATH);
+        return request().body(request).when().post(GET_ONE_PATH);
     }
 
     public Player getOne(PlayerLookupRequest request, int expectedStatusCode) {
@@ -47,7 +68,7 @@ public class PlayersApi extends ApiClient {
     }
 
     public Response getAllRaw() {
-        return givenBearer(token).when().get(GET_ALL_PATH);
+        return request().when().get(GET_ALL_PATH);
     }
 
     public List<Player> getAll() {
@@ -61,7 +82,7 @@ public class PlayersApi extends ApiClient {
     }
 
     public Response deleteOneRaw(int id) {
-        return givenBearer(token).pathParam("id", id).when().delete(DELETE_ONE_PATH);
+        return request().pathParam("id", id).when().delete(DELETE_ONE_PATH);
     }
 
     public Player deleteOne(int id) {

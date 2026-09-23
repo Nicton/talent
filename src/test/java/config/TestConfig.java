@@ -6,6 +6,7 @@ import java.util.Optional;
 public final class TestConfig {
     private static final String DEFAULT_BASE_URL = "https://testslotegrator.com";
     private static final String DEFAULT_CURRENCY = "USD";
+    private static final String DEFAULT_GET_ONE_STATUS = "201";
 
     private TestConfig() {
     }
@@ -24,6 +25,10 @@ public final class TestConfig {
 
     public static String defaultCurrency() {
         return value("DEFAULT_CURRENCY", DEFAULT_CURRENCY);
+    }
+
+    public static int getOneExpectedStatus() {
+        return Integer.parseInt(value("GET_ONE_EXPECTED_STATUS", DEFAULT_GET_ONE_STATUS));
     }
 
     private static String required(String key) {
