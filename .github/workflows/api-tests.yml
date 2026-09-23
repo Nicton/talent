@@ -18,11 +18,11 @@ permissions:
 jobs:
   api-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     env:
       BASE_URL: ${{ github.event.inputs.base_url || 'https://testslotegrator.com' }}
       TESTER_EMAIL: ${{ secrets.TESTER_EMAIL }}
-      TESTER_PASSWORD: ${{ secrets.TESTER_PASSWORD }}
+      TESTER_PASSWORD: *** secrets.TESTER_PASSWORD }}
       DEFAULT_CURRENCY: ${{ vars.DEFAULT_CURRENCY || 'USD' }}
       GET_ONE_EXPECTED_STATUS: ${{ vars.GET_ONE_EXPECTED_STATUS || '201' }}
     steps:
@@ -37,23 +37,38 @@ jobs:
       - name: Build test image
         run: docker compose build api-tests
 
+      # Both runs use continue-on-error so the job reaches the end and shows the
+      # full list of failures. The last step decides the overall result.
       - name: Run API tests
         id: tests
         continue-on-error: true
         run: docker compose run --rm api-tests
 
-      - name: Known defects (expected failures)
+      - name: Publish main suite results
+        if: always()
+        run: |
+          mkdir -p reports/main
+          cp -r target/surefire-reports/. reports/main/ 2>/dev/null || true
+          echo "## Main suite" >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/summarize-surefire.py reports/main >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Run known defect checks
         id: known_defects
         continue-on-error: true
         run: docker compose run --rm api-tests mvn -B -Dexcluded.groups= -Dgroups=known-issues test
 
+      - name: Publish known defect results
+        if: always()
+        run: |
+          mkdir -p reports/known-defects
+          cp -r target/surefire-reports/. reports/known-defects/ 2>/dev/null || true
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Known defects" >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/summarize-surefire.py reports/known-defects >> "$GITHUB_STEP_SUMMARY"
+
       - name: Generate HTML report
         if: always()
         run: docker compose run --rm api-tests mvn -B -q surefire-report:report-only
-
-      - name: Write job summary
-        if: always()
-        run: python3 scripts/summarize-surefire.py target/surefire-reports >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload test reports
         if: always()
@@ -61,10 +76,12 @@ jobs:
         with:
           name: test-reports
           path: |
-            target/surefire-reports
+            reports
             target/reports
           if-no-files-found: ignore
 
-      - name: Fail the job when tests failed
-        if: steps.tests.outcome == 'failure'
-        run: exit 1
+      - name: Fail when any test failed
+        if: steps.tests.outcome == 'failure' || steps.known_defects.outcome == 'failure'
+        run: |
+          echo "Test failures detected. Check the job summary and the test-reports artifact."
+          exit 1

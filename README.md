@@ -59,11 +59,14 @@ src/test/resources/schemas   JSON schemas used for response validation
 
 - `PlayersKnownDefectsTest` describes how the API *should* behave. Every failure is a defect listed in
   [`DEFECTS.md`](DEFECTS.md), and `TEST_CASES.md` maps the cases to the classes that implement them.
-- The tag is excluded from the default run so the regular suite stays green. Run it explicitly:
+- The tag is excluded from the default run. Run it explicitly:
 
 ```bash
 mvn test -Dexcluded.groups= -Dgroups=known-issues
 ```
+
+- The pipeline runs both suites, reports them separately and fails when either one is red.
+- Cases that are intentionally not implemented yet are listed in [`TEST_PLAN.md`](TEST_PLAN.md).
 
 ## Notes on the live API
 
