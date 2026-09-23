@@ -22,7 +22,7 @@ jobs:
     env:
       BASE_URL: ${{ github.event.inputs.base_url || 'https://testslotegrator.com' }}
       TESTER_EMAIL: ${{ secrets.TESTER_EMAIL }}
-      TESTER_PASSWORD: *** secrets.TESTER_PASSWORD }}
+      TESTER_PASSWORD: ${{ secrets.TESTER_PASSWORD }}
       DEFAULT_CURRENCY: ${{ vars.DEFAULT_CURRENCY || 'USD' }}
       GET_ONE_EXPECTED_STATUS: ${{ vars.GET_ONE_EXPECTED_STATUS || '201' }}
     steps:
